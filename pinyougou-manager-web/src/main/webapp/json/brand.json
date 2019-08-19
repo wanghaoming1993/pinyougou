@@ -1,0 +1,22 @@
+[
+    {
+        "id": 1,
+        "name": "小米",
+        "firstChar": "X"
+    },
+    {
+        "id": 2,
+        "name": "华为",
+        "firstChar": "H"
+    },
+    {
+        "id": 3,
+        "name": "HTC",
+        "firstChar": "H"
+    },
+    {
+        "id": 4,
+        "name": "海尔",
+        "firstChar": "H"
+    }
+]

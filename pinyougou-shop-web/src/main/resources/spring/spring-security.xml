@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans
+	xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd
+						http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+	<!-- 过滤资源 -->
+	<http security="none" pattern="/css/**"></http>
+	<http security="none" pattern="/*.html"></http>
+	<http security="none" pattern="/img/**"></http>
+	<http security="none" pattern="/js/**"></http>
+	<http security="none" pattern="/plugins/**"></http>
+	<http security="none" pattern="../seller/add.do" ></http>
+
+	<http use-expressions="false">
+		<intercept-url pattern="/**" access="ROLE_ADMIN" />
+		<form-login login-page="/shoplogin.html"
+			default-target-url="/admin/index.html"
+			authentication-failure-url="/shoplogin.html"
+			always-use-default-target="true" />
+		<headers>
+			<frame-options policy="SAMEORIGIN" />
+		</headers>
+		<csrf disabled="true" />
+		<logout />
+	</http>
+
+<!-- dubbo配置 -->
+	<dubbo:application name="pinyougou-shop-web" />
+	<dubbo:registry
+		address="zookeeper://192.168.25.129:2181"></dubbo:registry>
+	<dubbo:reference id="sellerService"
+		interface="com.pinyougou.sellergoods.service.SellerService"></dubbo:reference>
+		
+		
+		
+		
+	<beans:bean id="userDetailsService"
+		class="com.pinyougou.service.UserDetailsServiceImpl">
+		<beans:property name="sellerService"
+			ref="sellerService"></beans:property>
+	</beans:bean>
+
+
+	<!-- spring-security管理的配置 -->
+	<authentication-manager>
+		<authentication-provider
+			user-service-ref="userDetailsService">
+			<password-encoder ref="BCryptPasswordEncoder"></password-encoder>
+		</authentication-provider>
+	</authentication-manager>
+
+	<!-- BCryptPasswordEncoder加密配置 -->
+	<beans:bean id="BCryptPasswordEncoder"
+		class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"></beans:bean>
+
+
+</beans:beans>
